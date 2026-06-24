@@ -298,7 +298,7 @@ function handleConstant(val) {
 }
 
 /* ─── SEGMENTED CONTROLS ────────────────────────────────────────── */
-document.querySelectorAll('.seg-control[data-role!="prog"]').forEach(() => {});
+document.querySelectorAll('.seg-control:not([data-role="prog"])').forEach(() => {});
 
 // DEG/RAD
 document.querySelectorAll('#tab-scientific .seg-btn').forEach(btn => {
