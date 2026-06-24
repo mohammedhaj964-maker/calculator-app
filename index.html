@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الحاسبة">
+    <meta name="theme-color" content="#2C3E50">
+    <meta name="description" content="تطبيق حاسبة بسيط وسريع يعمل بدون اتصال بالإنترنت">
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <title>الحاسبة</title>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <div class="display-container">
+                <div class="display-info">
+                    <span id="previousOperand" class="previous-operand"></span>
+                    <span id="currentOperator" class="operator"></span>
+                </div>
+                <input type="text" id="display" class="display" placeholder="0" readonly>
+            </div>
+            
+            <div class="buttons-grid">
+                <!-- الصف الأول -->
+                <button class="btn btn-function" data-action="clear">C</button>
+                <button class="btn btn-function" data-action="delete">⌫</button>
+                <button class="btn btn-function" data-action="percent">%</button>
+                <button class="btn btn-operator" data-operator="÷">÷</button>
+                
+                <!-- الصف الثاني -->
+                <button class="btn btn-number" data-number="7">7</button>
+                <button class="btn btn-number" data-number="8">8</button>
+                <button class="btn btn-number" data-number="9">9</button>
+                <button class="btn btn-operator" data-operator="×">×</button>
+                
+                <!-- الصف الثالث -->
+                <button class="btn btn-number" data-number="4">4</button>
+                <button class="btn btn-number" data-number="5">5</button>
+                <button class="btn btn-number" data-number="6">6</button>
+                <button class="btn btn-operator" data-operator="-">−</button>
+                
+                <!-- الصف الرابع -->
+                <button class="btn btn-number" data-number="1">1</button>
+                <button class="btn btn-number" data-number="2">2</button>
+                <button class="btn btn-number" data-number="3">3</button>
+                <button class="btn btn-operator" data-operator="+">+</button>
+                
+                <!-- الصف الخامس -->
+                <button class="btn btn-number btn-zero" data-number="0">0</button>
+                <button class="btn btn-number" data-number=".">.</button>
+                <button class="btn btn-equals" data-action="equals">=</button>
+            </div>
+
+            <div class="info-text">
+                <p>يعمل بدون إنترنت 🚀</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker مسجل ✓'))
+                .catch(err => console.log('خطأ تسجيل Service Worker:', err));
+        }
+    </script>
+</body>
+</html>
