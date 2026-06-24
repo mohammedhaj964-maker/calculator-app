@@ -1,76 +1,338 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="الحاسبة">
-    <meta name="theme-color" content="#2C3E50">
-    <meta name="description" content="تطبيق حاسبة بسيط وسريع يعمل بدون اتصال بالإنترنت">
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    
-    <link rel="stylesheet" href="style.css">
-    <title>الحاسبة</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Math Pro" />
+  <meta name="theme-color" content="#0a0e1a" />
+  <meta name="description" content="Professional calculator app with scientific, graphing, calculus, and programmer modes." />
+
+  <title>Math Pro Calculator</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon.png" />
+  <link rel="icon" type="image/png" href="./icon.png" />
+  <link rel="stylesheet" href="./style.css" />
 </head>
-<body>
-    <div class="container">
-        <div class="calculator">
-            <div class="display-container">
-                <div class="display-info">
-                    <span id="previousOperand" class="previous-operand"></span>
-                    <span id="currentOperator" class="operator"></span>
-                </div>
-                <input type="text" id="display" class="display" placeholder="0" readonly>
-            </div>
-            
-            <div class="buttons-grid">
-                <!-- الصف الأول -->
-                <button class="btn btn-function" data-action="clear">C</button>
-                <button class="btn btn-function" data-action="delete">⌫</button>
-                <button class="btn btn-function" data-action="percent">%</button>
-                <button class="btn btn-operator" data-operator="÷">÷</button>
-                
-                <!-- الصف الثاني -->
-                <button class="btn btn-number" data-number="7">7</button>
-                <button class="btn btn-number" data-number="8">8</button>
-                <button class="btn btn-number" data-number="9">9</button>
-                <button class="btn btn-operator" data-operator="×">×</button>
-                
-                <!-- الصف الثالث -->
-                <button class="btn btn-number" data-number="4">4</button>
-                <button class="btn btn-number" data-number="5">5</button>
-                <button class="btn btn-number" data-number="6">6</button>
-                <button class="btn btn-operator" data-operator="-">−</button>
-                
-                <!-- الصف الرابع -->
-                <button class="btn btn-number" data-number="1">1</button>
-                <button class="btn btn-number" data-number="2">2</button>
-                <button class="btn btn-number" data-number="3">3</button>
-                <button class="btn btn-operator" data-operator="+">+</button>
-                
-                <!-- الصف الخامس -->
-                <button class="btn btn-number btn-zero" data-number="0">0</button>
-                <button class="btn btn-number" data-number=".">.</button>
-                <button class="btn btn-equals" data-action="equals">=</button>
-            </div>
+<body class="dark">
 
-            <div class="info-text">
-                <p>يعمل بدون إنترنت 🚀</p>
-            </div>
+  <!-- ═══════════════════════════════════════════════════ APP SHELL -->
+  <div id="app">
+
+    <!-- ─── HEADER ─────────────────────────────────────────────── -->
+    <header id="app-header">
+      <div class="header-inner">
+        <div class="header-brand">
+          <span class="brand-icon">∑</span>
+          <span class="brand-name">Math Pro</span>
         </div>
-    </div>
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </div>
+    </header>
 
-    <script src="app.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('Service Worker مسجل ✓'))
-                .catch(err => console.log('خطأ تسجيل Service Worker:', err));
-        }
-    </script>
+    <!-- ─── MAIN CONTENT ────────────────────────────────────────── -->
+    <main id="main-content">
+
+      <!-- ─── DISPLAY PANEL ──────────────────────────────────────── -->
+      <div id="display-panel">
+        <div id="display-expression" aria-live="polite"></div>
+        <div id="display-result" aria-live="polite">0</div>
+      </div>
+
+      <!-- ─── TABS ──────────────────────────────────────────────── -->
+      <nav id="tab-nav" role="tablist">
+        <button class="tab-btn active" data-tab="basic"       role="tab" aria-selected="true">Basic</button>
+        <button class="tab-btn"        data-tab="scientific"  role="tab">Scientific</button>
+        <button class="tab-btn"        data-tab="programmer"  role="tab">Programmer</button>
+        <button class="tab-btn"        data-tab="calculus"    role="tab">Calculus</button>
+        <button class="tab-btn"        data-tab="graph"       role="tab">Graph</button>
+        <button class="tab-btn"        data-tab="history"     role="tab">History</button>
+      </nav>
+
+      <!-- ═══════════════════ TAB PANELS ═══════════════════════════ -->
+      <div id="tab-panels">
+
+        <!-- ─── BASIC CALCULATOR ──────────────────────────────── -->
+        <section id="tab-basic" class="tab-panel active" role="tabpanel">
+          <div class="keypad basic-keypad">
+            <!-- Row 1 -->
+            <button class="key key-func" data-action="clear">C</button>
+            <button class="key key-func" data-action="toggleSign">+/−</button>
+            <button class="key key-func" data-action="percent">%</button>
+            <button class="key key-op"   data-action="op" data-val="÷">÷</button>
+            <!-- Row 2 -->
+            <button class="key key-num" data-action="num" data-val="7">7</button>
+            <button class="key key-num" data-action="num" data-val="8">8</button>
+            <button class="key key-num" data-action="num" data-val="9">9</button>
+            <button class="key key-op"  data-action="op" data-val="×">×</button>
+            <!-- Row 3 -->
+            <button class="key key-num" data-action="num" data-val="4">4</button>
+            <button class="key key-num" data-action="num" data-val="5">5</button>
+            <button class="key key-num" data-action="num" data-val="6">6</button>
+            <button class="key key-op"  data-action="op" data-val="−">−</button>
+            <!-- Row 4 -->
+            <button class="key key-num" data-action="num" data-val="1">1</button>
+            <button class="key key-num" data-action="num" data-val="2">2</button>
+            <button class="key key-num" data-action="num" data-val="3">3</button>
+            <button class="key key-op"  data-action="op" data-val="+">+</button>
+            <!-- Row 5 -->
+            <button class="key key-num key-wide" data-action="num" data-val="0">0</button>
+            <button class="key key-num" data-action="decimal">.</button>
+            <button class="key key-eq"  data-action="equals">=</button>
+          </div>
+
+          <!-- Extra row: parens + backspace -->
+          <div class="keypad-extras">
+            <button class="key key-func key-sm" data-action="paren" data-val="(">(</button>
+            <button class="key key-func key-sm" data-action="paren" data-val=")">)</button>
+            <button class="key key-func key-sm" data-action="backspace">⌫</button>
+          </div>
+        </section>
+
+        <!-- ─── SCIENTIFIC CALCULATOR ─────────────────────────── -->
+        <section id="tab-scientific" class="tab-panel" role="tabpanel">
+          <!-- DEG/RAD toggle -->
+          <div class="sci-top-row">
+            <div class="seg-control">
+              <button class="seg-btn active" data-mode="DEG">DEG</button>
+              <button class="seg-btn"        data-mode="RAD">RAD</button>
+            </div>
+          </div>
+
+          <div class="keypad sci-keypad">
+            <!-- Row 1: trig -->
+            <button class="key key-sci" data-action="sci" data-fn="sin">sin</button>
+            <button class="key key-sci" data-action="sci" data-fn="cos">cos</button>
+            <button class="key key-sci" data-action="sci" data-fn="tan">tan</button>
+            <button class="key key-sci" data-action="sci" data-fn="asin">sin⁻¹</button>
+            <!-- Row 2 -->
+            <button class="key key-sci" data-action="sci" data-fn="acos">cos⁻¹</button>
+            <button class="key key-sci" data-action="sci" data-fn="atan">tan⁻¹</button>
+            <button class="key key-sci" data-action="sci" data-fn="log">log</button>
+            <button class="key key-sci" data-action="sci" data-fn="ln">ln</button>
+            <!-- Row 3 -->
+            <button class="key key-sci" data-action="sci" data-fn="sqrt">√x</button>
+            <button class="key key-sci" data-action="sci" data-fn="cbrt">∛x</button>
+            <button class="key key-sci" data-action="sci" data-fn="sq">x²</button>
+            <button class="key key-sci" data-action="sci" data-fn="cube">x³</button>
+            <!-- Row 4 -->
+            <button class="key key-sci" data-action="sci" data-fn="pow">xʸ</button>
+            <button class="key key-sci" data-action="sci" data-fn="inv">1/x</button>
+            <button class="key key-sci" data-action="sci" data-fn="exp">exp</button>
+            <button class="key key-sci" data-action="sci" data-fn="abs">|x|</button>
+            <!-- Row 5 -->
+            <button class="key key-sci" data-action="sci" data-fn="fact">x!</button>
+            <button class="key key-const" data-action="const" data-val="π">π</button>
+            <button class="key key-const" data-action="const" data-val="e">e</button>
+            <button class="key key-func"  data-action="clear">C</button>
+          </div>
+
+          <!-- Shared numeric keypad for scientific -->
+          <div class="keypad sci-num-keypad">
+            <button class="key key-num" data-action="num" data-val="7">7</button>
+            <button class="key key-num" data-action="num" data-val="8">8</button>
+            <button class="key key-num" data-action="num" data-val="9">9</button>
+            <button class="key key-op"  data-action="op" data-val="÷">÷</button>
+            <button class="key key-num" data-action="num" data-val="4">4</button>
+            <button class="key key-num" data-action="num" data-val="5">5</button>
+            <button class="key key-num" data-action="num" data-val="6">6</button>
+            <button class="key key-op"  data-action="op" data-val="×">×</button>
+            <button class="key key-num" data-action="num" data-val="1">1</button>
+            <button class="key key-num" data-action="num" data-val="2">2</button>
+            <button class="key key-num" data-action="num" data-val="3">3</button>
+            <button class="key key-op"  data-action="op" data-val="−">−</button>
+            <button class="key key-num key-wide" data-action="num" data-val="0">0</button>
+            <button class="key key-num" data-action="decimal">.</button>
+            <button class="key key-eq"  data-action="equals">=</button>
+            <button class="key key-op"  data-action="op" data-val="+">+</button>
+          </div>
+
+          <div class="keypad-extras">
+            <button class="key key-func key-sm" data-action="paren" data-val="(">(</button>
+            <button class="key key-func key-sm" data-action="paren" data-val=")">)</button>
+            <button class="key key-func key-sm" data-action="backspace">⌫</button>
+          </div>
+        </section>
+
+        <!-- ─── PROGRAMMER CALCULATOR ─────────────────────────── -->
+        <section id="tab-programmer" class="tab-panel" role="tabpanel">
+          <div class="prog-panel">
+            <div class="prog-input-card card">
+              <label class="card-label">Enter Number</label>
+              <input type="text" id="prog-input" class="calc-input" placeholder="Enter a number…" autocomplete="off" />
+              <div class="seg-control" id="prog-base-sel">
+                <button class="seg-btn active" data-base="10">DEC</button>
+                <button class="seg-btn" data-base="2">BIN</button>
+                <button class="seg-btn" data-base="16">HEX</button>
+                <button class="seg-btn" data-base="8">OCT</button>
+              </div>
+            </div>
+
+            <div id="prog-error" class="error-msg hidden"></div>
+
+            <div class="prog-results">
+              <div class="prog-result-card card" id="prog-dec">
+                <span class="prog-label">DEC</span>
+                <span class="prog-value" id="prog-val-dec">—</span>
+              </div>
+              <div class="prog-result-card card" id="prog-bin">
+                <span class="prog-label">BIN</span>
+                <span class="prog-value prog-value-sm" id="prog-val-bin">—</span>
+              </div>
+              <div class="prog-result-card card" id="prog-hex">
+                <span class="prog-label">HEX</span>
+                <span class="prog-value" id="prog-val-hex">—</span>
+              </div>
+              <div class="prog-result-card card" id="prog-oct">
+                <span class="prog-label">OCT</span>
+                <span class="prog-value" id="prog-val-oct">—</span>
+              </div>
+            </div>
+
+            <button class="action-btn" id="prog-convert-btn">Convert</button>
+          </div>
+        </section>
+
+        <!-- ─── CALCULUS CALCULATOR ───────────────────────────── -->
+        <section id="tab-calculus" class="tab-panel" role="tabpanel">
+          <div class="calc-sections">
+
+            <!-- Derivative -->
+            <div class="calc-section card">
+              <div class="section-header">
+                <span class="section-icon">∂</span>
+                <h3 class="section-title">Derivative  <span class="section-sub">f ′(x₀)</span></h3>
+              </div>
+              <div class="input-group">
+                <label class="input-label">f(x)</label>
+                <input type="text" id="deriv-fx" class="calc-input" placeholder="e.g. x^2 + sin(x)" autocomplete="off" />
+              </div>
+              <div class="input-group">
+                <label class="input-label">x₀</label>
+                <input type="number" id="deriv-x0" class="calc-input" placeholder="e.g. 1" step="any" />
+              </div>
+              <button class="action-btn" id="deriv-btn">Calculate Derivative</button>
+              <div class="result-box hidden" id="deriv-result"></div>
+            </div>
+
+            <!-- Integral -->
+            <div class="calc-section card">
+              <div class="section-header">
+                <span class="section-icon">∫</span>
+                <h3 class="section-title">Definite Integral  <span class="section-sub">∫ f(x) dx</span></h3>
+              </div>
+              <div class="input-group">
+                <label class="input-label">f(x)</label>
+                <input type="text" id="integ-fx" class="calc-input" placeholder="e.g. x^2" autocomplete="off" />
+              </div>
+              <div class="input-row">
+                <div class="input-group">
+                  <label class="input-label">a (lower)</label>
+                  <input type="number" id="integ-a" class="calc-input" placeholder="0" step="any" />
+                </div>
+                <div class="input-group">
+                  <label class="input-label">b (upper)</label>
+                  <input type="number" id="integ-b" class="calc-input" placeholder="1" step="any" />
+                </div>
+              </div>
+              <button class="action-btn" id="integ-btn">Calculate Integral</button>
+              <div class="result-box hidden" id="integ-result"></div>
+            </div>
+
+            <!-- Function Tester -->
+            <div class="calc-section card">
+              <div class="section-header">
+                <span class="section-icon">ƒ</span>
+                <h3 class="section-title">Function Tester  <span class="section-sub">f(x) at x</span></h3>
+              </div>
+              <div class="input-group">
+                <label class="input-label">f(x)</label>
+                <input type="text" id="ft-fx" class="calc-input" placeholder="e.g. exp(-x)*cos(x)" autocomplete="off" />
+              </div>
+              <div class="input-group">
+                <label class="input-label">x</label>
+                <input type="number" id="ft-x" class="calc-input" placeholder="e.g. 0" step="any" />
+              </div>
+              <button class="action-btn" id="ft-btn">Evaluate</button>
+              <div class="result-box hidden" id="ft-result"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── GRAPHING CALCULATOR ────────────────────────────── -->
+        <section id="tab-graph" class="tab-panel" role="tabpanel">
+          <div class="graph-panel">
+            <div class="graph-controls card">
+              <div class="input-group">
+                <label class="input-label">y = f(x)</label>
+                <input type="text" id="graph-fx" class="calc-input" placeholder="e.g. sin(x)*exp(-x/5)" autocomplete="off" />
+              </div>
+              <div class="input-row">
+                <div class="input-group">
+                  <label class="input-label">x min</label>
+                  <input type="number" id="graph-xmin" class="calc-input" value="-10" step="any" />
+                </div>
+                <div class="input-group">
+                  <label class="input-label">x max</label>
+                  <input type="number" id="graph-xmax" class="calc-input" value="10" step="any" />
+                </div>
+              </div>
+              <div class="input-row">
+                <div class="input-group">
+                  <label class="input-label">y min (opt)</label>
+                  <input type="number" id="graph-ymin" class="calc-input" placeholder="auto" step="any" />
+                </div>
+                <div class="input-group">
+                  <label class="input-label">y max (opt)</label>
+                  <input type="number" id="graph-ymax" class="calc-input" placeholder="auto" step="any" />
+                </div>
+              </div>
+              <div class="graph-btn-row">
+                <button class="action-btn" id="graph-plot-btn">Plot</button>
+                <button class="action-btn action-btn-ghost" id="graph-clear-btn">Clear</button>
+              </div>
+              <div class="graph-opts">
+                <label class="toggle-label"><input type="checkbox" id="show-grid" checked /> Grid</label>
+                <label class="toggle-label"><input type="checkbox" id="show-axes" checked /> Axes</label>
+              </div>
+              <div class="graph-zoom-row">
+                <button class="zoom-btn" id="zoom-in">＋</button>
+                <button class="zoom-btn" id="zoom-out">－</button>
+                <button class="zoom-btn" id="zoom-reset">⟲</button>
+              </div>
+            </div>
+
+            <div id="graph-error" class="error-msg hidden"></div>
+
+            <div class="canvas-card card">
+              <canvas id="graph-canvas"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── HISTORY ────────────────────────────────────────── -->
+        <section id="tab-history" class="tab-panel" role="tabpanel">
+          <div class="history-panel">
+            <div class="history-header">
+              <h3 class="history-title">Recent Calculations</h3>
+              <button class="action-btn action-btn-ghost action-btn-sm" id="clear-history-btn">Clear All</button>
+            </div>
+            <div id="history-list"></div>
+            <div id="history-empty" class="empty-state hidden">
+              <span class="empty-icon">📋</span>
+              <p>No history yet.<br>Start calculating!</p>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /tab-panels -->
+    </main>
+  </div><!-- /app -->
+
+  <script src="./app.js"></script>
 </body>
 </html>
